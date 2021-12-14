@@ -186,7 +186,7 @@ class Ups
     public function setShipTo($address)
     {
         $this->apiRequest['ShipTo'] = [
-            'Name' => $address['name']
+            'Name' => $address['name'],
             'Address' => [
                 'AddressLine' => [$address['addressLine']],
                 'City' =>  $address['city'],
@@ -317,7 +317,7 @@ class Ups
                     'Code' => $options['weight']['unitOfMeasurement']['code'],
                     'Description' => $options['weight']['unitOfMeasurement']['description']
                 ],
-            'Value' => $options['value'],
+                'Value' => $options['weight']['value'],
             ],
             'NumberOfPieces' => $options['numberOfPieces'],
             'PackagingType' => [
@@ -327,7 +327,7 @@ class Ups
             'DangerousGoodsIndicator' => $options['dangerousGoodsIndicator'],
             'CommodityValue' => [
                 'CurrencyCode' => $options['commodityValue']['currencyCode'],
-                'MonetaryValue' => $options['commidityValue']['monetaryValue']
+                'MonetaryValue' => $options['commodityValue']['monetaryValue']
             ],
             'FreightClass' => $options['freightClass'],
             'NMFCCommodityCode' => $options['nmfcCommodityCode'],
@@ -362,7 +362,12 @@ class Ups
     private function getRate()
     {
         $this->setOptions();
-        $this->request['Shipment'] = $this->apiRequest;
+        
+        if ($this->type == 'standard') {
+            $this->request['Shipment'] = $this->apiRequest;
+        } else if ($this->type == 'freight') {
+            $this->request = $this->apiRequest + $this->request;
+        }
         
         try {
             $client = new SoapClient(__DIR__.$this->wsdl, [
@@ -395,9 +400,12 @@ class Ups
             
             $response = $client->__soapCall($this->operation, [$this->request]);
         
-            return $response->RatedShipment->TotalCharges;
-        
-            //die($resp->TotalShipmentCharge->MonetaryValue);
+            if ($this->type == 'standard') {
+                return $response->RatedShipment->TotalCharges;    
+            } else if ($this->type == 'freight') {
+                return $response->TotalShipmentCharge;
+            }
+
         } catch (SoapFault $e) {
             die($client->__getLastResponse());
         } catch (Exception $ex) {
