@@ -10,7 +10,7 @@
     $shipment->setShippingType('standard');
     $shipment->setRequestOption('Rate');
     $shipment->setPickupType(['code' => '01','description' => 'Daily Pickup']);
-    $shipment->setCustomerClassification(['code' => '01','classification' => 'Classfication']);
+    $shipment->setCustomerClassification(['code' => '01','classification' => 'Classification']);
     $shipment->setShipper([
         'name' => 'Target Field',
         'shipperNumber' => '222006',
