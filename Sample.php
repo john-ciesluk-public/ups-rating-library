@@ -169,4 +169,4 @@
     $shipment->setRateTypes(['Standard LTL']);
     
     
-    echo "<pre>";var_dump($shipment->getRates(['UPS Freight LTL','Standard LTL']));exit;
+    echo "<pre>";var_dump($shipment->getRates());exit;
