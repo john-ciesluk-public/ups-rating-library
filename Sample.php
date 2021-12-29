@@ -4,8 +4,8 @@
     
     // Standard Shipment
     $shipment = new Ups();
-    $shipment->setUserId('bobisyouruncle');
-    $shipment->setPassword('youruncleisyourcousin');
+    $shipment->setUserId('putyourUPSuseridhere');
+    $shipment->setPassword('putyourUPSpasswordhere');
     $shipment->setAccessKey('12344567890');
     $shipment->setShippingType('standard');
     $shipment->setRequestOption('Rate');
