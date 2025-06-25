@@ -11,7 +11,7 @@ class Ups
      * Sets the shipping type to either freight or standard
      *
      */
-    public function setShippingType($type)
+    public function setShippingType(string $type): void
     {
         $this->type = $type;
     }
@@ -20,7 +20,7 @@ class Ups
      * Sets the rate types in an array ['UPS Ground','UPS Next Day Air'], etc.
      *
      */
-    public function setRateTypes($rateTypes)
+    public function setRateTypes($rateTypes): void
     {
         $this->rateTypes = $rateTypes;
     }
@@ -29,7 +29,7 @@ class Ups
      * Set the user id from your UPS account
      *
      */
-    public function setUserId($userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
@@ -38,7 +38,7 @@ class Ups
      * Set the password from your UPS account
      *
      */
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
@@ -47,7 +47,7 @@ class Ups
      * Set the access key from your UPS account
      *
      */
-    public function setAccessKey($key)
+    public function setAccessKey(string $key): void
     {
         $this->accessKey = $key;
     }
@@ -56,7 +56,7 @@ class Ups
      * Returns a list of rates and their costs
      *
      */
-    public function getRates()
+    public function getRates(): array
     {
         $codes = $this->selectUpsCodes();
         
@@ -73,7 +73,7 @@ class Ups
      * Runs an api call to get the rates for a shipment
      *
      */
-    public function processRate()
+    public function processRate(): array
     {   
         return $this->getRate();
     }
@@ -83,7 +83,7 @@ class Ups
      * Configures the wsdl and endpoint urls
      *
      */
-    private function setOptions()
+    private function setOptions(): void
     {   
         $rateWsdl = 'require/RateWS.wsdl';
         $rateOption = 'ProcessRate';
@@ -106,39 +106,17 @@ class Ups
                 break;
         }
     }
+
     
     /**
-     * Haven't the foggiest what this is for, but if you need it, it's there
+     * Sets the pickup types
      *
      */
-    public function setRequestOption($option)
-    {
-        $this->request['Request'] = [
-            'RequestOption' => $option
-        ];
-    }
-    
-    /**
-     * @TODO: find a listing of these and update
-     *
-     */
-    public function setPickupType($pickupType)
+    public function setPickupType(arrray $pickupType): void
     {
         $this->request['PickupType'] = [
             'Code' => $pickupType['code'],
             'Description' => $pickupType['description']
-        ];
-    }
-    
-    /**
-     * Haven't the foggiest what this is for, but if you need it, it's there
-     *
-     */
-    public function setCustomerClassification($classification)
-    {
-        $this->request['CustomerClassification'] = [
-            'Code' => $classification['code'],
-            'Classification' => $classification['classification']
         ];
     }
 
@@ -146,7 +124,7 @@ class Ups
      * Sets the shipper
      *
      */
-    public function setShipper($shipper)
+    public function setShipper(array $shipper): void
     {
         $this->apiRequest['Shipper'] = [
             'Name' => $shipper['name'],
@@ -165,7 +143,7 @@ class Ups
      * Sets the ship from address
      *
      */
-    public function setShipFrom($address)
+    public function setShipFrom(array $address): void
     {
         $this->apiRequest['ShipFrom'] = [
             'Name' => $address['name'],
@@ -183,7 +161,7 @@ class Ups
      * Sets the shipto address
      *
      */
-    public function setShipTo($address)
+    public function setShipTo(arrray $address): void
     {
         $this->apiRequest['ShipTo'] = [
             'Name' => $address['name'],
@@ -202,7 +180,7 @@ class Ups
      * Sets the payment information
      *
      */
-    public function setPaymentInformation($payment)
+    public function setPaymentInformation(arrray $payment): void
     {
         $this->apiRequest['PaymentInformation'] = [
             'Payer' => [
@@ -226,7 +204,7 @@ class Ups
      * Sets the service.  Ex. UPS Ground 
      *
      */
-    private function setService($service)
+    private function setService(array $service): void
     {
         $this->apiRequest['Service'] = [
             'Code' => $service['code'],
@@ -239,7 +217,7 @@ class Ups
      * @TODO see if you can request multiple services at once
      *
      */
-    private function unsetService()
+    private function unsetService(): void
     {
         unset($this->apiRequest['Service']);
     }
@@ -248,7 +226,7 @@ class Ups
      * Sets the handling unit for a freight shipment
      *
      */
-    public function setHandlingUnit($handling)
+    public function setHandlingUnit(array $handling): void
     {
         $this->apiRequest['HandlingUnitOne'] = [
             'Quantity' => $handling['quantity'],
@@ -263,7 +241,7 @@ class Ups
      * Sets the packages for a shipment
      *
      */
-    public function setPackages($packages)
+    public function setPackages(array $packages): void
     {
         foreach ($packages as $package) {
             
@@ -277,7 +255,7 @@ class Ups
      * Sets the package information
      *
      */
-    private function setPackage($package)
+    private function setPackage(array $package): array
     {
         return [
             'PackagingType' => [
@@ -307,7 +285,7 @@ class Ups
      * Sets weight and other information for a freight shipment
      *
      */
-    public function setCommodityFreight($options)
+    public function setCommodityFreight(array $options): void
     {
         $this->apiRequest['Commodity'] = [
             'CommodityID' => $options['commodityId'],
@@ -342,24 +320,13 @@ class Ups
             ],
         ];
     }
-   
-    /**
-     *
-     * Once again, the ups example doesn't explain what this could be set to
-     *
-     */
-    public function setSpecialOptions($options)
-    {
-        $this->apiRequest['ShipmentServiceOptions'] = $options['shipmentServiceOptions'];
-        $this->apiRequest['LargePackageIndicator'] = $options['largePackageIndicator'];
-    }
     
     /**
      *
      * Gets the rate for a shipment
      *
      */
-    private function getRate()
+    private function getRate(): float
     {
         $this->setOptions();
         
@@ -419,7 +386,7 @@ class Ups
      * A list of Standard UPS shipping codes and their descriptions
      *
      */
-    private function upsCodes()
+    private function upsCodes(): array
     {
         return [
             //US
@@ -443,7 +410,7 @@ class Ups
      * A list of UPS Freight Codes
      *
      */
-    private function upsFreightCodes()
+    private function upsFreightCodes(): array
     {
         return [
             ['code' => '308', 'description' => 'UPS Freight LTL'],
@@ -457,7 +424,7 @@ class Ups
      * Sets the rates and their codes based on the selected rate types
      *
      */
-    private function selectUpsCodes()
+    private function selectUpsCodes(): array
     {
         $options = $this->rateTypes;
         
